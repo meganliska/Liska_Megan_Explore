@@ -2,6 +2,7 @@
 #Group C
 
 require(ggplot2) #we will need the ggplot library for the graphs for 3 and 4 
+require(grid) #we will use this for questions 3 and 4 
 #1 
 freqtable <- function(x){
   #freqtable loops through a dataframe and creates a frequency table for every
