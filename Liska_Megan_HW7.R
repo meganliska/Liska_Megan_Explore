@@ -197,7 +197,7 @@ numeric_plot <- function(data, plot_switch, binVec) {
       
       plot2 <- ggplot(data, aes_string(name)) + geom_histogram(aes(y= ..density..), fill="blue") + 
         geom_vline(xintercept = m[[1]], colour="red")
-      #creates two histograms, one for blank and one for blank
+      #creates two histograms
       #geom_vline adds our vertical line at the mean 
       multiplot(plot1, plot2, cols = 1)
       #use multiplot to plot the histograms on our grid 
