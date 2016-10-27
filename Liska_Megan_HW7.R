@@ -3,6 +3,7 @@
 
 require(ggplot2) #we will need the ggplot library for the graphs for 3 and 4 
 require(grid) #we will use this for questions 3 and 4 
+
 #1 
 freqtable <- function(x){
   #freqtable loops through a dataframe and creates a frequency table for every
@@ -46,20 +47,19 @@ rsquare <- function(x){
   
   #Returns:
   #a new dataframe 
-  numcols <- sapply(data, is.numeric)   
-  new_data <- data[,num]      #extract the numeric columns since those are the ones we want to find r squared 
-  colnames <- colnames(new_data)     #new vector where we will put the column names 
-  combonames <- combn(names, 2)   #find all the combinations of the name pairs 
-  combo <- combn(length(colnames(new_data)), 2)   #find all the combination of the indices of the colnames
-  variable <- paste(combonames[1,], combonames[2,], sep = '-')  #create vector to store the variables combinations
-  Rsquare <- c()    #create empty vectors to store Rsquare value
   
-  for(i in 1:length(variable)){                       
-    regression <- paste0(combonames[1,i], " ~ ", combonames[2,i])     #maunally type in the regression formula to avoid input a list in lm() function
-    r1 <- summary( lm(as.formula(regression), data=new_data) )$r.squared      #extract r square values
-    Rsquare[i] <- r1                                          
-  }
-  return(data.frame(variable, Rsquare)) #combine as dataframe
+  data.numerics <- data[sapply(data, is.numeric)]#create a variable with just the numeric columns
+  
+  combos <- combn(colnames(data.numerics), 2)#use combn to get all the pairs of 2 columns
+  
+  interactions <- paste(combos[1,], combos[2,], sep = '~') #use the paste to what
+  
+  #now we use lm (linear regression) and $r.squared to extract the r squared value from the regression 
+  coeff.det <- unname(sapply(interactions, function(x) summary(lm(x, data = data.numerics))$r.squared))
+  
+  return(data.frame("Variable Pairs" = interactions, "R-Square" = coeff.det)) #returns our new dataframe
+  #with the columns labeled as desired 
+
 
 }
 
@@ -76,6 +76,7 @@ corCoef <- function(x){
   
   #Returns:
   #dataframe
+  
   a <- x[sapply(x, is.numeric)] #creates a variable that only has the numeric 
   #columns
   
@@ -93,14 +94,16 @@ corCoef <- function(x){
     correlation <- c[which(lower.tri(c))] #gets the correclation values of the lower 
     #triangular matrix since those match the column pairs 
     
-    newdf <- data.frame(pairs, correlation) #create a new data frame with our pairs 
+    newdf <- data.frame("Variable Pairs" = pairs, "Pearson Exceeds Threshold" = correlation) 
+    #create a new data frame with our pairs 
     return(newdf)
     
   }
   else  #print this message if we can't find Pearson correlation
     print("Pearson Correlation cannot be computted because there are not enough numeric columns")
 }
-#We don't want all these values, we only want the ones that are greater than, so add a new function
+#We don't want all these values, we only want the ones whose absolute value
+#is greater than the correlation threshold, so add a new function
 
 abs_pearson <- function(dataset, threshold){
   #abs_pearson function takes a dataframe of with pearson correlations of each 2 variables
@@ -112,8 +115,8 @@ abs_pearson <- function(dataset, threshold){
   #Results: 
   #the combination of column names and their Pearson coefficients values 
   #that are greater than the threshold
-  row_index <- which(abs(dataset[,2]) > threshold)      #determine which column is greater than threshold
-  return(dataset[row_index, ])                           #return a new dataframe with the updated coefficients
+  row_index <- which(abs(dataset[,2]) > threshold)  #determine which column is greater than threshold
+  return(dataset[row_index, ])  #return a new dataframe with the updated coefficients
 }
 
 
@@ -274,6 +277,7 @@ explore <-function(data,plot_switch,threshold,binVec){
   Pearsontable <- abs_pearson(newdf)
   outputplot <- numeric_plot()
   outputplot2 <- cata_binary_plot()
+  
   #we want out output to be an R list so we take the desired variables here and make them into 
   #a new list which is what the function will return 
   outputlist <- list(outputdata, datasummary, rtable, Pearsontable)
