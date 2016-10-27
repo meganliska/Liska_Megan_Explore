@@ -3,7 +3,7 @@
 
 require(ggplot2) #we will need the ggplot library for the graphs for 3 and 4 
 require(grid) #we will use this for questions 3 and 4 
-testdata <- diamonds[1:300,]
+testdata <- diamonds[1:300,] #part of the diamonds data to use to test explore
 
 #1 
 freqtable <- function(data){
