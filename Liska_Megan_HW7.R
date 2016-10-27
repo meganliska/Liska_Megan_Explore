@@ -21,7 +21,7 @@ freqtable <- function(data){
   #each of the columns 
   return(ftable)
 }
-freqtable(diamonds) #test case 
+ 
 
 #2a
 colsummary <- function(x){
