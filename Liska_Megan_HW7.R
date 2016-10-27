@@ -218,7 +218,7 @@ numeric_plot <- function(data, plot_switch, binVec) {
         print(ggplot(data, aes_string(name), color = "blue") + 
                 geom_histogram(aes(y= ..density..), fill="blue")+ labs(title= "default bins")) + 
           geom_vline(xintercept = m[[1]], colour="red") 
-        #prints out two historgrams using ggplot 
+        #prints out two historgrams one for density and one for count using ggplot 
       }else{                            
         for(i in 1:length(binVec)) {    #loop through each bin size in binVec and create a subplot
           k <- ggplot(data, aes_string(name), color = "blue") + 
@@ -227,7 +227,7 @@ numeric_plot <- function(data, plot_switch, binVec) {
           count_plots[[i]] <- k           #Puts subplots in a list 
         }
         multiplot(plotlist = count_plots, cols = 2)  #uses multiplot to plot our graphs   
-        #we repeat the process expcept for the second histogram 
+        #we repeat the process except for the second histogram 
         
         for(i in 1:length(binVec)) {   
           k <- ggplot(data, aes_string(name), color = "blue") + 
@@ -252,7 +252,7 @@ cata_binary_plot <-function(data, plot_switch){
   #data - a dataframe, plot_switch- a string
   
   #Returns: bar graphs
-  
+  #We use an if/else  statements for the different cases for plot switch
   cata_binary <- sapply(data, function(x) (is.factor(x) || is.logical(x)))    
   cata_binary_data <- data[cata_binary]     #extract binary and categorical columns 
   
