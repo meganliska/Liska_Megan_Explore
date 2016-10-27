@@ -188,10 +188,14 @@ numeric_plot <- function(data, plot_switch, binVec) {
     if(plot_switch == "on"){      #1st case when switch is "on"
       grid.newpage()          
       m <- lapply(data[name], mean)       #find the mean of the column so we can plot our vertical line
-      plot1 <- ggplot(data, aes_string(name)) + geom_histogram(fill="blue") + geom_vline(xintercept = m[[1]], colour="red") 
-      plot2 <- ggplot(data, aes_string(name)) + geom_histogram(aes(y= ..density..), fill="blue") + geom_vline(xintercept = m[[1]], colour="red")
+      
+      plot1 <- ggplot(data, aes_string(name)) + geom_histogram(fill="blue") + 
+        geom_vline(xintercept = m[[1]], colour="red") 
+      
+      plot2 <- ggplot(data, aes_string(name)) + geom_histogram(aes(y= ..density..), fill="blue") + 
+        geom_vline(xintercept = m[[1]], colour="red")
       #creates two histograms, one for blank and one for blank
-      #geom_vline adds our vertical line
+      #geom_vline adds our vertical line at the mean 
       multiplot(plot1, plot2, cols = 1)
       #use multiplot to plot the histograms on our grid 
       
@@ -202,18 +206,24 @@ numeric_plot <- function(data, plot_switch, binVec) {
       count_plots <- list()       #Create list to store histogram subplots of each bin size
       density_plots <- list()           #Create list to store the density histograms subplots of each bin size
       if(missing(binVec)){              #case when the vector is null and prints histogram using the default bins 30
-        print(ggplot(data, aes_string(name), color = "blue") + geom_histogram(fill="blue")+ labs(title= "default bins"))
-        print(ggplot(data, aes_string(name), color = "blue") + geom_histogram(aes(y= ..density..), fill="blue")+ labs(title= "default bins"))
+        print(ggplot(data, aes_string(name), color = "blue") + geom_histogram(fill="blue")+ 
+                labs(title= "default bins"))
+        
+        print(ggplot(data, aes_string(name), color = "blue") + 
+                geom_histogram(aes(y= ..density..), fill="blue")+ labs(title= "default bins"))
         #prints out two historgrams using ggplot 
       }else{                            
         for(i in 1:length(binVec)) {    #loop through each bin size in binVec and create a subplot
-          k <- ggplot(data, aes_string(name), color = "blue") + geom_histogram(fill="blue", bins = binVec[i])+ labs(title= paste(binVec[i], "bins"))
+          k <- ggplot(data, aes_string(name), color = "blue") + 
+            geom_histogram(fill="blue", bins = binVec[i])+ labs(title= paste(binVec[i], "bins"))
           count_plots[[i]] <- k           #Puts subplots in a list 
         }
         multiplot(plotlist = count_plots, cols = 2)  #uses multiplot to plot our graphs   
         #we repeat the process expcept for the second histogram 
         for(i in 1:length(binVec)) {   
-          k <- ggplot(data, aes_string(name), color = "blue") + geom_histogram(aes(y= ..density..), fill="blue", bins = binVec[i])+ labs(title= paste(binVec[i], "bins"))
+          k <- ggplot(data, aes_string(name), color = "blue") + 
+            geom_histogram(aes(y= ..density..), fill="blue", bins = binVec[i])+ 
+            labs(title= paste(binVec[i], "bins"))
           density_plots[[i]] <- k       
         }
         multiplot(plotlist = density_plots, cols = 2)
@@ -248,10 +258,20 @@ cata_binary_plot <-function(data, plot_switch){
 
 #Now finally we will take all the functions that we have made and combine them into our explore 
 #function as was directed in the homework 
-explore <-function(a,b,c){
-  #explore takes four parameters (name them)
+explore <-function(data,plot_switch,threshold,binVec){
+  #explore takes four parameters: a dataframe, a plot switch which accepts the values: off, on or grid
+  #a threshold cut-off value between 0 and 1 for correlations, and an optional vector that contains one or
+  #more integers that represent the numbers of bins to use for a historgram. If the vector is not provided
+  #the function will use the ggplot default of 30.
+  
   #Parameters:
+  #data - a dataframe
+  #plot_switch- a plot switch which accepts the values: off, on or grid (string)
+  #threshold- cut-off value between 0 and 1 for correlations (value)
+  #binVec - a vector 
   
   #Returns:
+  #An R list 
+  
   
 }
