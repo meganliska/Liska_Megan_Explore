@@ -46,26 +46,20 @@ rsquare <- function(x){
   
   #Returns:
   #a new dataframe 
+  numcols <- sapply(data, is.numeric)   
+  new_data <- data[,num]      #extract the numeric columns since those are the ones we want to find r squared 
+  colnames <- colnames(new_data)     #new vector where we will put the column names 
+  combonames <- combn(names, 2)   #find all the combinations of the name pairs 
+  combo <- combn(length(colnames(new_data)), 2)   #find all the combination of the indices of the colnames
+  variable <- paste(combonames[1,], combonames[2,], sep = '-')  #create vector to store the variables combinations
+  Rsquare <- c()    #create empty vectors to store Rsquare value
   
-  a <- x[sapply(x, is.numeric)]
-  if(ncol(a) >= 2) {
-    b <- combn(colnames(a), 2) #finds all combinations of the name pairs
-    
-    pairs <- paste(b[1,], b[2, ], sep = "-") #makes sure that the column names
-    #are seperated by - using paste function to paste the columns
-    
-    c <- cor(a, method = "pearson")#finds the pearson correlation using the cor 
-    #function and creates of matrix of the values
-    
-    correlation <- c[which(lower.tri(c))] #gets the correlation values of the lower 
-    #triangular matrix since those match the column pairs 
-    
-    newdf <- data.frame(pairs, correlation) #create a new data frame with our pairs 
-    return(newdf)
-    
+  for(i in 1:length(variable)){                       
+    regression <- paste0(combonames[1,i], " ~ ", combonames[2,i])     #maunally type in the regression formula to avoid input a list in lm() function
+    r1 <- summary( lm(as.formula(regression), data=new_data) )$r.squared      #extract r square values
+    Rsquare[i] <- r1                                          
   }
-  else  #print this message if we can't find Pearson correlation
-    print("Pearson Correlation cannot be computted because there are not enough numeric columns")
+  return(data.frame(variable, Rsquare)) #combine as dataframe
 
 }
 
@@ -273,6 +267,17 @@ explore <-function(data,plot_switch,threshold,binVec){
   
   #Returns:
   #An R list 
+  outputdata <- freqtable(data)
+  datasummary <- colsummary(data)
+  rtable <- rsquare(data)
+  corCoef(data)
+  Pearsontable <- abs_pearson(newdf)
+  outputplot <- numeric_plot()
+  outputplot2 <- cata_binary_plot()
+  #we want out output to be an R list so we take the desired variables here and make them into 
+  #a new list which is what the function will return 
+  outputlist <- list(outputdata, datasummary, rtable, Pearsontable)
+  return(outputlist)
   
   
 }
