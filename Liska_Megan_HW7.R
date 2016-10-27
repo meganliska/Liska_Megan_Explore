@@ -3,9 +3,10 @@
 
 require(ggplot2) #we will need the ggplot library for the graphs for 3 and 4 
 require(grid) #we will use this for questions 3 and 4 
+testdata <- diamonds[1:300,]
 
 #1 
-freqtable <- function(x){
+freqtable <- function(data){
   #freqtable loops through a dataframe and creates a frequency table for every
   #factor column. 
   #Parameters:
@@ -15,7 +16,7 @@ freqtable <- function(x){
   #Frequency table 
   factorcols <-sapply(data, function (x) (is.factor(x) || is.logical(x))) #uses sapply to grab the columns of 
   #dataframe x which are factor columns and logic columns (finds factor columns using is.factor)
-  catdata <- x[,factorcols] #takes just the categorical part of the data
+  catdata <- data[,factorcols] #takes just the categorical part of the data
   ftable <- sapply(data, function(x) summary(x)) #uses sapply and function(x) to apply summary to
   #each of the columns 
   return(ftable)
@@ -34,13 +35,13 @@ colsummary <- function(x){
   
   numeric <- sapply(x,is.numeric) #sapply applies is.numeric to each column
   #in the dataframe to extract the numeric columns
-  print(sapply(x[,numeric], summary)) #sapply then applies summary to the numeric
+  return(sapply(x[,numeric], summary)) #sapply then applies summary to the numeric
   #columns of the dataframe and prints them 
 }
 
 #2b
 
-rsquare <- function(x){
+rsquare <- function(data){
   #rsquare takes any dataframe as a parameter and returns a dataframe that contains
   #each pair of column names in the first column as a single string seperated
   #by a "-" and their corresponding () in the second column
@@ -252,7 +253,7 @@ cata_binary_plot <-function(data, plot_switch){
   
   #Returns: bar graphs
   
-  cata_binary <- sapply(data, function(x) (is.factor(x) || is.logical(x)) || is.binary(x))    
+  cata_binary <- sapply(data, function(x) (is.factor(x) || is.logical(x)))    
   cata_binary_data <- data[cata_binary]     #extract binary and categorical columns 
   
   if(plot_switch == "on" || plot_switch == "grid") {      #if plot switch is on or grid we want our graphs
@@ -285,10 +286,10 @@ explore <-function(data, plot_switch, threshold, binVec){
   outputdata <- freqtable(data)
   datasummary <- colsummary(data)
   rtable <- rsquare(data)
-  corCoef(data)
-  Pearsontable <- abs_pearson(newdf,threshold)
+  #corCoef(data)
+  Pearsontable <- abs_pearson(corCoef(data),threshold)
   outputplot <- numeric_plot(data,plot_switch,binVec)
-  outputplot2 <- cata_binary_plot(data,Plot_switch,binVec)
+  outputplot2 <- cata_binary_plot(data,plot_switch)
   
   #we want out output to be an R list so we take the desired variables here and make them into 
   #a new list which is what the function will return 
@@ -297,3 +298,6 @@ explore <-function(data, plot_switch, threshold, binVec){
   
   
 }
+
+#test case 
+k <- explore(testdata,"on",0.1,c(20,30,40))
