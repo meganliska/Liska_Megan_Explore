@@ -295,7 +295,7 @@ explore <-function(data, plot_switch, threshold, binVec){
     stop("correlation threshold must be in range [0,1].")
   }#this is if the user puts in a threshold that is not between 0 or 1 inclusive
   if (!is.null(binVec) && !is.numeric(binVec)) {
-    stop("number of bins must be a positive integer.")
+    stop("number of bins needs to be a positive integer.")
   } 
   if (!is.null(binVec) && !all(binVec == round(binVec))) {
     binVec <- round(binVec)
@@ -303,7 +303,7 @@ explore <-function(data, plot_switch, threshold, binVec){
   if (!is.null(binVec) && !all(binVec > 0)) {
     binVec <- binVec[binVec>0]
     if (is.null(binVec)) {
-      stop("number of bins must be a positive integer.")
+      stop("number of bins needs to be a positive integer.")
     }
     else message("number of bins must be a positive integer. non-positive values have been removed.")
   }
@@ -331,3 +331,5 @@ explore <-function(data, plot_switch, threshold, binVec){
 k <- explore(testdata,"on",0.1,c(20,30,40))
 #test the defensive programming 
 t <- explore(testdata,"o")
+t2 <-explore(testdata,"on",2)
+t3 <- explore(testdata,"on",.2,c(-5))
