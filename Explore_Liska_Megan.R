@@ -307,22 +307,7 @@ explore <-function(data, plot_switch, threshold, binVec){
     }
     else message("number of bins must be a positive integer. non-positive values have been removed.")
   }
-  if (sum(sapply(x, is.numeric)) > 1) {
-    coeff.det <- r.squared(x)
-    numeric.summaries <- lapply(x[sapply(x, is.numeric)], summary)
-    corrCoeffs <- correlations(x, threshold)
-  }
-  else {
-    coeff.det <- NULL
-    numeric.summaries <- NULL
-    corrCoeffs <- NULL
-  }
-  if (sum(sapply(x, function(x) (is.factor(x) || is.logical(x)))) > 0) {
-    freqs <- freqtables(x)
-  }
-  else {
-    freqs <- NULL
-  }
+
   
 
   
@@ -344,3 +329,5 @@ explore <-function(data, plot_switch, threshold, binVec){
 
 #test case 
 k <- explore(testdata,"on",0.1,c(20,30,40))
+#test the defensive programming 
+t <- explore(testdata,"o")
