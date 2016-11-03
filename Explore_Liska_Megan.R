@@ -287,7 +287,7 @@ explore <-function(data, plot_switch, threshold, binVec){
   
   if (!is.data.frame(data)) {
     stop("data must be a single data frame.")
-  } #This takes care of the case where 
+  } #This takes care of the case where we don't have a correct dataframe
   if (!plot_switch %in% c("on", "off", "grid")) {
     stop("plot_switch must be one of the following: 'on' | 'off' | 'grid'.")
   } #this is if the user inputs something other than on off or grid for the plot switch
@@ -306,7 +306,7 @@ explore <-function(data, plot_switch, threshold, binVec){
       stop("number of bins needs to be a positive integer.")
     }
     else message("number of bins must be a positive integer. non-positive values have been removed.")
-  }
+  } #this makes sure our binVec values are positive because we can't use negative binwidths in our graphs
 
   
 
