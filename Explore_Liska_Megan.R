@@ -268,6 +268,8 @@ cata_binary_plot <-function(data, plot_switch){
 
 #Now finally we will take all the functions that we have made and combine them into our explore 
 #function as was directed in the homework 
+#added for HW 8- defensive programming through a series of if else statements that check to make sure 
+#function parameters have been met.
 explore <-function(data, plot_switch, threshold, binVec){
   #explore takes four parameters: a dataframe, a plot switch which accepts the values: off, on or grid
   #a threshold cut-off value between 0 and 1 for correlations, and an optional vector that contains one or
@@ -282,6 +284,47 @@ explore <-function(data, plot_switch, threshold, binVec){
   
   #Returns:
   #An R list 
+  
+  if (!is.data.frame(data)) {
+    stop("data must be a single data frame.")
+  } #This takes care of the case where 
+  if (!plot_switch %in% c("on", "off", "grid")) {
+    stop("plot_switch must be one of the following: 'on' | 'off' | 'grid'.")
+  } #this is if the user inputs something other than on off or grid for the plot switch
+  if (threshold < 0 || threshold > 1) {
+    stop("correlation threshold must be in range [0,1].")
+  }#this is if the user puts in a threshold that is not between 0 or 1 inclusive
+  if (!is.null(binVec) && !is.numeric(binVec)) {
+    stop("number of bins must be a positive integer.")
+  } 
+  if (!is.null(binVec) && !all(binVec == round(binVec))) {
+    binVec <- round(binVec)
+  }#this rounds the bin number to a whole number in case user puts in decimals 
+  if (!is.null(binVec) && !all(binVec > 0)) {
+    binVec <- binVec[binVec>0]
+    if (is.null(binVec)) {
+      stop("number of bins must be a positive integer.")
+    }
+    else message("number of bins must be a positive integer. non-positive values have been removed.")
+  }
+  if (sum(sapply(x, is.numeric)) > 1) {
+    coeff.det <- r.squared(x)
+    numeric.summaries <- lapply(x[sapply(x, is.numeric)], summary)
+    corrCoeffs <- correlations(x, threshold)
+  }
+  else {
+    coeff.det <- NULL
+    numeric.summaries <- NULL
+    corrCoeffs <- NULL
+  }
+  if (sum(sapply(x, function(x) (is.factor(x) || is.logical(x)))) > 0) {
+    freqs <- freqtables(x)
+  }
+  else {
+    freqs <- NULL
+  }
+  
+
   
   outputdata <- freqtable(data)
   datasummary <- colsummary(data)
